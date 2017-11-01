@@ -21,7 +21,7 @@
 		// updatecurrent : boolean,
 		noCache : boolean,
 		updatehead : boolean,
-		// reloadScripts : boolean,
+		reloadScripts : boolean,
 		// scrollLeft : number,
 		// scrollTop : number,
 		loaded : boolean,
@@ -59,7 +59,7 @@
 			noCache			: false,
 			// updatecurrent	: false,
 			updatehead		: true,
-			// reloadScripts	: false,
+			reloadScripts	: false,
 			// scrollLeft		: 0,
 			// scrollTop		: 0,
 			loaded			: false,
@@ -307,7 +307,7 @@
 
 			var action = replace?'replaceState':'pushState';
 
-			if(this.config.noCache) url = url.replace(this.rand, '');
+			// if(this.config.noCache) url = url.replace(this.rand, '');
 
 			// UPDATE HISTORY
 			window.history[action]({ pjax : options }, title, url);
@@ -474,11 +474,11 @@
 
 			this.triggerEvent("initiate", url, config);
 
-			url = this.processUrl(config.proxy || url);
+			url = config.proxy || url;
 
 			this.abort();
 			this.xhr = new XMLHttpRequest();
-			this.xhr.open(Protocol[method], url, true);
+			this.xhr.open(Protocol[method], this.processUrl(url), true);
 
 			var headers = {
 				"X-PJAX-Container": config.containers.join(","),
@@ -594,7 +594,7 @@
 
 		public start = (config : Object = null) =>{
 			for(var k in this.config){
-				if(k in config) this.config[k] = config[k];
+				if(config && config[k] !== undefined) this.config[k] = config[k];
 			}
 
 			this.ready();
@@ -613,8 +613,6 @@
 	}
 
 	var Object = new Pjax();
-
-	window['T'] = Object;
 
 	window['Pjax'] = {
 		supported : Object.supported,
